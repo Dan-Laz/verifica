@@ -172,7 +172,47 @@
     <?php
     
         if (isset($_POST["corso"])){
-            echo $_POST["corso"];
+            $corso = $_POST["corso"];
+            //echo $_POST["corso"]; //debug
+
+
+                $servername = "localhost";
+                $username = "root";
+                $password = "";
+
+                try {
+                $conn = new PDO("mysql:host=$servername;dbname=lazzaroni_gym", $username, $password);
+                // set the PDO error mode to exception
+                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                } catch(PDOException $e) {
+                die("Could not connect. " . $e->getMessage());
+                }
+                
+                try {
+                $sql = "SELECT m.id_membro, m.nome, m.cognome FROM corsi c, iscrizioni_corsi ic, membri m  WHERE c.id_corso = $corso AND c.id_corso = ic.id_corso AND ic.id_membro = m.id_membro ;";
+                $result = $conn->query($sql);
+                $membri = $result->fetchAll();
+
+                foreach ($membri as $membro) {
+                    echo $membro['nome'] . " " . $membro['cognome'] . "" ."<br>";
+                }
+
+                } catch(PDOException $e) {
+                // Handle errors during query execution
+                echo "Error executing query: " . $sql . "<br>" . $e->getMessage();
+                }
+
+                // Close connection
+                $conn = null;
+                        
+
+
+
+
+
+
+
+
         }
     
     
