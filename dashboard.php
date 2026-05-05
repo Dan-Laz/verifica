@@ -128,7 +128,7 @@
 
     <h2>visualizza iscritti di un corso</h2>
     <form action="dashboard.php" method="post">
-        <label>seleziona corso</label>
+        <h3>seleziona corso</h3>
         <select name="corso">
         <?php
                 $servername = "localhost";
@@ -167,7 +167,7 @@
         <input type="submit">
         
 
-    </form>
+    </form><br>
 
     <?php
     
@@ -194,7 +194,41 @@
                 $membri = $result->fetchAll();
 
                 foreach ($membri as $membro) {
-                    echo $membro['nome'] . " " . $membro['cognome'] . "" ."<br>";
+                    echo $membro['nome'] . " " . $membro['cognome'] . "<form action='change_corso.php' method='post'>
+                                                                            <label>cambia corso</label>
+                                                                            <select name='corso'>";
+
+                                                                            $servername = "localhost";
+                                                                            $username = "root";
+                                                                            $password = "";
+                                                            
+                                                                            try {
+                                                                            $conn = new PDO("mysql:host=$servername;dbname=lazzaroni_gym", $username, $password);
+                                                                            // set the PDO error mode to exception
+                                                                            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                                                                            } catch(PDOException $e) {
+                                                                            die("Could not connect. " . $e->getMessage());
+                                                                            }
+                                                                            
+                                                                            try {
+                                                                            $sql = "SELECT * FROM corsi;";
+                                                                            $result = $conn->query($sql);
+                                                                            $corsi = $result->fetchAll();
+                                                            
+                                                                            foreach ($corsi as $corso) {
+                                                                                echo "<option value='" . $corso['id_corso'] . "'>" . $corso['nome_corso'] . " " . $corso['livello_difficolta'] . "</option>";
+                                                                            }
+                                                            
+                                                                            } catch(PDOException $e) {
+                                                                            // Handle errors during query execution
+                                                                            echo "Error executing query: " . $sql . "<br>" . $e->getMessage();
+                                                                            }
+                                                            
+                                                                            // Close connection
+                                                                            $conn = null;
+
+                
+                                                                    echo "</select><input type=submit></form><br>";
                 }
 
                 } catch(PDOException $e) {
