@@ -45,7 +45,9 @@
             ?>
         </select>
 
+        <label>membro</label>
         <select name="iscritto">
+        
         <?php
                 $servername = "localhost";
                 $username = "root";
@@ -79,7 +81,12 @@
             ?>
 
 
-        </select> 
+        </select>
+        <label>orario preferito</label>
+        <input type="time" name="orario" required>
+
+        <input type="submit">
+
 
     </form>
 
