@@ -90,5 +90,96 @@
 
     </form>
 
+    
+    <h2>istruttori con almeno 5 (per dubugging alemeno 0 iscritti - vedi codice) iscritti:</h2>
+    <?php
+
+        $servername = "localhost";
+        $username = "root";
+        $password = "";
+
+        try {
+        $conn = new PDO("mysql:host=$servername;dbname=lazzaroni_gym", $username, $password);
+        // set the PDO error mode to exception
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(PDOException $e) {
+        die("Could not connect. " . $e->getMessage());
+        }
+        
+        try {
+        // ci vorrebbe HAVING count(c.nome_corso) >= 5 ma per debugging non avendo popolato abbastanza il database lascio cosi
+        $sql = "SELECT i.nome , i.cognome, c.nome_corso, count(c.nome_corso) FROM istruttori i, iscrizioni_corsi ic, corsi c WHERE i.id_istruttore = c.id_istruttore AND c.id_corso = ic.id_corso GROUP BY i.nome , i.cognome, c.nome_corso HAVING count(c.nome_corso) >= 0;";
+        $result = $conn->query($sql);
+        $istruttori = $result->fetchAll();
+
+        foreach ($istruttori as $istruttore) {
+            echo $istruttore['nome'] . " " . $istruttore['cognome'] . ", " . $istruttore['nome_corso'] . ": " . $istruttore['count(c.nome_corso)'] . " iscritti <br>";
+        }
+
+        } catch(PDOException $e) {
+        // Handle errors during query execution
+        echo "Error executing query: " . $sql . "<br>" . $e->getMessage();
+        }
+
+        // Close connection
+        $conn = null;
+    
+    ?>
+
+    <h2>visualizza iscritti di un corso</h2>
+    <form action="dashboard.php" method="post">
+        <label>seleziona corso</label>
+        <select name="corso">
+        <?php
+                $servername = "localhost";
+                $username = "root";
+                $password = "";
+
+                try {
+                $conn = new PDO("mysql:host=$servername;dbname=lazzaroni_gym", $username, $password);
+                // set the PDO error mode to exception
+                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                } catch(PDOException $e) {
+                die("Could not connect. " . $e->getMessage());
+                }
+                
+                try {
+                $sql = "SELECT * FROM corsi;";
+                $result = $conn->query($sql);
+                $corsi = $result->fetchAll();
+
+                foreach ($corsi as $corso) {
+                    echo "<option value='" . $corso['id_corso'] . "'>" . $corso['nome_corso'] . " " . $corso['livello_difficolta'] . "</option>";
+                }
+
+                } catch(PDOException $e) {
+                // Handle errors during query execution
+                echo "Error executing query: " . $sql . "<br>" . $e->getMessage();
+                }
+
+                // Close connection
+                $conn = null;
+                        
+            ?>
+
+        </select>
+
+        <input type="submit">
+        
+
+    </form>
+
+    <?php
+    
+        if (isset($_POST["corso"])){
+            echo $_POST["corso"];
+        }
+    
+    
+    
+    ?>
+
+
+
 </body>
 </html>
